@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { createUser, getUserByEmail } = require("../models/userModel");
-const userCreateSchema = require("../schemas/createUserSchema");
-const userLoginSchema = require("../schemas/loginUserSchema");
+const userCreateSchema = require("../schemas/userSchema/createUserSchema");
+const userLoginSchema = require("../schemas/userSchema/loginUserSchema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const checkIfUserExists = require("../services/userService");
