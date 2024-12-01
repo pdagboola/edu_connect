@@ -1,9 +1,17 @@
 const pool = require("../config/pool");
 
-const createUser = async (username, password, name, email, date_joined) => {
+const createUser = async (
+  username,
+  password,
+  name,
+  email,
+  date_joined,
+  communities,
+  interests
+) => {
   const { rows } = await pool.query(
-    `INSERT INTO users(username, password, name, email, date_joined) VALUES ($1, $2, $3, $4, $5) RETURNING username, password;`,
-    [username, password, name, email, date_joined]
+    `INSERT INTO users(username, password, name, email, date_joined, communities, interests) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING username, password;`,
+    [username, password, name, email, date_joined, communities, interests]
   );
   return rows;
 };

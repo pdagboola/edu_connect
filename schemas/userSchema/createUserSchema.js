@@ -14,6 +14,11 @@ const userCreateSchema = z.object({
     .string()
     .min(8, { message: "Password must be at least 8 characters long" })
     .max(128, { message: "Password can only be a maximum of 128 characters" }),
+  interests: z.string().min(1, { message: "Please select your interests" }),
+  communities: z
+    .string()
+    .min(1, { message: "Please select your communities you'd like to join" })
+    .optional(),
 });
 
 module.exports = userCreateSchema;

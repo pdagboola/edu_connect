@@ -15,7 +15,15 @@ const registerUserPost = async (req, res) => {
         err: result.error.errors.map((error) => error.message),
       });
     }
-    const { username, password, first_name, last_name, email } = result.data;
+    const {
+      username,
+      password,
+      first_name,
+      last_name,
+      email,
+      interests,
+      communities,
+    } = result.data;
     const name = `${first_name.trim("")} ${last_name.trim("")}`;
     const new_password = await bcrypt.hash(password, 10);
     const userExists = await checkIfUserExists(email);
@@ -25,7 +33,15 @@ const registerUserPost = async (req, res) => {
         .json({ success: false, err: "This user already exists" });
     }
     const date_joined = new Date().toISOString();
-    await createUser(username, new_password, name, email, date_joined);
+    await createUser(
+      username,
+      new_password,
+      name,
+      email,
+      date_joined,
+      interests,
+      communities
+    );
     return res
       .status(200)
       .json({ succes: true, data: "User created sucessfully" });
