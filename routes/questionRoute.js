@@ -6,7 +6,7 @@ const {
   allQuestions,
   questionsByUser,
 } = require("../controllers/questionsController");
-const passport = require("../middlewares/auth");
+const passport = require("../middlewares/authMiddleware");
 
 route.use(passport.authenticate("jwt", { session: false }));
 route.get("/", allQuestions);
