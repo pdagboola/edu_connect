@@ -1,20 +1,12 @@
 require("dotenv").config();
 const { createUser, getUserByEmail } = require("../models/userModel");
-const userCreateSchema = require("../schemas/userSchema/createUserSchema");
-const userLoginSchema = require("../schemas/userSchema/loginUserSchema");
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const checkIfUserExists = require("../services/userService");
 
 const registerUserPost = async (req, res) => {
   try {
-    const result = userCreateSchema.safeParse(req.body);
-    if (result.error) {
-      return res.status(400).json({
-        success: false,
-        err: result.error.errors.map((error) => error.message),
-      });
-    }
     const {
       username,
       password,
@@ -23,7 +15,7 @@ const registerUserPost = async (req, res) => {
       email,
       interests,
       communities,
-    } = result.data;
+    } = req.validatedData;
     const name = `${first_name.trim("")} ${last_name.trim("")}`;
     const new_password = await bcrypt.hash(password, 10);
     const userExists = await checkIfUserExists(email);
