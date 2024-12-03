@@ -1,10 +1,12 @@
-require("dotenv").config({ path: "../../config/.env" });
+require("dotenv").config({
+  path: "/Users/apple/Desktop/code/edu_connect/config/.env",
+});
 const JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt;
 const { getUserById } = require("../../models/userModel");
-const opts = {};
 
-opts.secretOrKey = process.env.SECRET_KEY;
+const opts = {};
+opts.secretOrKey = process.env.JWT_SECRET;
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 
 const jwtStrategy = new JwtStrategy(

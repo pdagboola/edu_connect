@@ -3,6 +3,7 @@ const express = require("express");
 const userRoute = require("./routes/userRoute");
 const questionRoute = require("./routes/questionRoute");
 const PORT = process.env.PORT;
+
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
