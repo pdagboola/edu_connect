@@ -6,7 +6,7 @@ createDatabase = async () => {
   await pool.query(`DROP TABLE IF EXISTS questions;`);
   await pool.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
   await pool.query(
-    `CREATE TABLE users(id uuid DEFAULT uuid_generate_v4() PRIMARY KEY, username VARCHAR(255), password VARCHAR(255), name VARCHAR(255), email VARCHAR(255), date_joined DATE);`
+    `CREATE TABLE users(id uuid DEFAULT uuid_generate_v4() PRIMARY KEY, username VARCHAR(255), password VARCHAR(255), name VARCHAR(255), email VARCHAR(255), date_joined DATE, google_id VARCHAR 255, facebook_id VARCHAR 255);`
   );
   await pool.query(
     `CREATE TABLE interests (id SERIAL PRIMARY KEY, name VARCHAR(255) UNIQUE NOT NULL);`

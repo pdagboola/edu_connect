@@ -20,6 +20,7 @@ const getUserById = async (id) => {
   const { rows } = await pool.query(`SELECT * FROM users WHERE id = $1;`, [id]);
   return rows;
 };
+
 const getUserByEmail = async (email) => {
   const { rows } = await pool.query(
     `SELECT * FROM users WHERE email LIKE $1;`,
@@ -27,6 +28,7 @@ const getUserByEmail = async (email) => {
   );
   return rows;
 };
+
 const getUserByGoogleId = async (googleId) => {
   const { rows } = await pool.query(
     `SELECT * FROM users WHERE google_id = $1;`,

@@ -1,7 +1,6 @@
 require("dotenv").config({
   path: "/Users/apple/Desktop/code/edu_connect/config/.env",
 });
-const passport = require("passport");
 const GoogleOIDCStrategy = require("passport-google-oidc").Strategy;
 
 const {
@@ -13,12 +12,14 @@ const googleStrategy = new GoogleOIDCStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/callback",
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,
   },
   async (issuer, profile, done) => {
     try {
       let user = await getUserByGoogleId(profile.id);
-      if (user.length === 0) {
+      if (user.length > 0) {
+        return done(null, user[0]);
+      } else {
         const date_joined = new Date().toISOString();
         const new_user = await createUserByGoogleID(
           profile.id,
@@ -26,12 +27,10 @@ const googleStrategy = new GoogleOIDCStrategy(
           profile.emails[0].value,
           date_joined
         );
-        done(null, new_user);
-      } else {
-        return done(null, user[0]);
+        return done(null, new_user);
       }
     } catch (err) {
-      done(err, false);
+      return done(err, false);
     }
   }
 );
