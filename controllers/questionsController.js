@@ -47,7 +47,9 @@ const questionsByUser = async (req, res) => {
   try {
     // const token = req.headers.authorization.split(" ")[1];
     // const user = jwt.verify(token, process.env.SECRET_KEY);
-    const { id } = req.params;
+    console.log("user", req.user);
+
+    const { id } = req.user;
     const questions = await getQuestionsByUser(id);
     console.log(questions);
     return res.status(200).json({ success: true, data: questions });

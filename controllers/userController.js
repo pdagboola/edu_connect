@@ -1,6 +1,8 @@
-require("dotenv").config();
+require("dotenv").config({
+  path: "/Users/apple/Desktop/code/edu_connect/config/.env",
+});
 const { createUser, getUserByEmail } = require("../models/userModel");
-
+const userLoginSchema = require("../schemas/userSchema/loginUserSchema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const checkIfUserExists = require("../services/userService");
@@ -66,11 +68,13 @@ const loginUserPost = async (req, res) => {
         .status(401)
         .json({ success: false, err: "Invalid username/password" });
     }
+    console.log(process.env.JWT_SECRET);
     const token = jwt.sign(
       { sub: user.id, username: user.username },
-      process.env.SECRET_KEY,
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+
     delete user.password;
     return res.status(200).json({
       success: true,
