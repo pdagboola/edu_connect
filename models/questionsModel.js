@@ -23,5 +23,16 @@ const getQuestionsByUser = async (id) => {
   );
   return rows;
 };
+const getQuestionsById = async (id) => {
+  const { rows } = await pool.query(`SELECT * FROM questions where id = $1`, [
+    id,
+  ]);
+  return rows;
+};
 
-module.exports = { getQuestions, getQuestionsByUser, createQuestion };
+module.exports = {
+  getQuestions,
+  getQuestionsByUser,
+  createQuestion,
+  getQuestionsById,
+};

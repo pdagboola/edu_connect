@@ -68,7 +68,6 @@ const loginUserPost = async (req, res) => {
         .status(401)
         .json({ success: false, err: "Invalid username/password" });
     }
-    console.log(process.env.JWT_SECRET);
     const token = jwt.sign(
       { sub: user.id, username: user.username },
       process.env.JWT_SECRET,

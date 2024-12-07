@@ -4,15 +4,12 @@ const {
   createQuestion,
   getQuestions,
   getQuestionsByUser,
+  getQuestionsById,
 } = require("../models/questionsModel");
 const jwt = require("jsonwebtoken");
 const askQuestion = async (req, res) => {
   try {
-    const result = askQuestionSchema.safeParse(req.body);
-    const authHeader = req.headers.authorization;
-    const token = authHeader.split(" ")[1];
-    const user = jwt.verify(token, process.env.SECRET_KEY);
-    const asked_by = user.sub;
+    const asked_by = req.user.id;
     if (result.error) {
       return res.status(400).json({
         success: false,
@@ -24,7 +21,6 @@ const askQuestion = async (req, res) => {
     const { question, subject, tags } = result.data;
     const date_asked = new Date().toISOString();
     const newTags = JSON.stringify(tags.split(","));
-    console.log(newTags);
     await createQuestion(question, asked_by, subject, newTags, date_asked);
     return res
       .status(200)
@@ -45,16 +41,21 @@ const allQuestions = async (req, res) => {
 
 const questionsByUser = async (req, res) => {
   try {
-    // const token = req.headers.authorization.split(" ")[1];
-    // const user = jwt.verify(token, process.env.SECRET_KEY);
-    console.log("user", req.user);
-
     const { id } = req.user;
     const questions = await getQuestionsByUser(id);
-    console.log(questions);
     return res.status(200).json({ success: true, data: questions });
   } catch (err) {
     return res.status(500).json({ success: false, err: err.message });
   }
 };
-module.exports = { askQuestion, allQuestions, questionsByUser };
+
+const questionsById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const question = await getQuestionsById(id);
+    return res.status(200).json({ success: true, data: question });
+  } catch (err) {
+    return res.status(500).json({ success: false, err: err.message });
+  }
+};
+module.exports = { askQuestion, allQuestions, questionsByUser, questionsById };

@@ -4,13 +4,13 @@ const route = Router();
 const {
   askQuestion,
   allQuestions,
-  questionsByUser,
+  questionsById,
 } = require("../controllers/questionsController");
 const passport = require("../auth/passport");
 
 route.use(passport.authenticate("jwt", { session: false }));
 route.get("/", allQuestions);
-route.get("/:id", questionsByUser);
+route.get("/:id", questionsById);
 route.post("/", askQuestion);
 
 module.exports = route;
