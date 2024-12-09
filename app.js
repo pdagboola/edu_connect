@@ -5,6 +5,9 @@ const questionRoute = require("./routes/questionRoute");
 const PORT = process.env.PORT;
 const session = require("express-session");
 const authRoute = require("./routes/authRoute");
+const adminRoute = require("./routes/adminRoute");
+const passport = require("./auth/passport");
+const errorHandler = require("./middlewares/errorHandler");
 // const https = require("https");
 
 const app = express();
@@ -24,6 +27,7 @@ app.use(express.json());
 app.use("/user", userRoute);
 app.use("/question", questionRoute);
 app.use("/auth", authRoute);
+app.use("/admin", adminRoute);
 
 app.use(errorHandler);
 

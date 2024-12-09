@@ -9,8 +9,8 @@ const createUser = async (username, password, name, email, date_joined) => {
 };
 
 const createUserByGoogleID = async (name, google_id, email, date_joined) => {
-  const rows = await pool.query(
-    `INSERT INTO users(name, google_id, email, date_joined) VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+  const { rows } = await pool.query(
+    `INSERT INTO users(name, google_id, email, date_joined) VALUES ($1, $2, $3, $4) RETURNING *;`,
     [name, google_id, email, date_joined]
   );
   return rows;
@@ -45,6 +45,11 @@ const getUserByFacebookId = async (facebook_id) => {
   return rows;
 };
 
+const getAllUsers = async () => {
+  const { rows } = await pool.query(`SELECT * FROM users`);
+  return rows;
+};
+
 module.exports = {
   createUser,
   getUserById,
@@ -52,4 +57,5 @@ module.exports = {
   getUserByGoogleId,
   createUserByGoogleID,
   getUserByFacebookId,
+  getAllUsers,
 };

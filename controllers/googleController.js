@@ -1,29 +1,32 @@
 const passport = require("../auth/passport");
+const generateState = require("../helpers/generateState");
 
-const googleLogin = async () => {
-  passport.authenticate("google", { scope: ["profile", "email"] })(
-    req,
-    res,
-    next
-  );
+const googleLogin = (req, res, next) => {
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    state: generateState(),
+  })(req, res, next);
 };
 
-const googleCallback = async () => {
+const googleCallback = (req, res, next) => {
   passport.authenticate(
     "google",
     { failureRedirect: "/login" },
     (err, user, info) => {
       if (err) {
-        return next(err); // Handle errors
+        console.log(err, "error");
+
+        return next(err);
       }
       if (!user) {
-        return res.redirect("/login"); // Redirect if user is not authenticated
+        console.log(user, "user");
+        return res.redirect("/question");
       }
       req.login(user, (err) => {
         if (err) {
           return next(err);
         }
-        return res.redirect("/user/dashboard"); // Redirect to dashboard after successful login
+        return res.redirect("/question");
       });
     }
   )(req, res, next);
