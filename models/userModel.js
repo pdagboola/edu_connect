@@ -29,10 +29,18 @@ const getUserByEmail = async (email) => {
   return rows;
 };
 
-const getUserByGoogleId = async (googleId) => {
+const getUserByGoogleId = async (google_id) => {
   const { rows } = await pool.query(
     `SELECT * FROM users WHERE google_id = $1;`,
-    [googleId]
+    [google_id]
+  );
+  return rows;
+};
+
+const getUserByFacebookId = async (facebook_id) => {
+  const { rows } = await pool.query(
+    `SELECT * FROM users WHERE facebook_id = $1;`,
+    [facebook_id]
   );
   return rows;
 };
@@ -43,4 +51,5 @@ module.exports = {
   getUserByEmail,
   getUserByGoogleId,
   createUserByGoogleID,
+  getUserByFacebookId,
 };

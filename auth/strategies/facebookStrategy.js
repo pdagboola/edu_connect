@@ -1,8 +1,9 @@
 require("dotenv").config({
   path: "/Users/apple/Desktop/code/edu_connect/config/.env",
 });
+
 const FacebookStrategy = require("passport-facebook").Strategy;
-const userModel = require("../../models/userModel");
+const { createUser, getUserByFacebookId } = require("../../models/userModel");
 const facebookStrategy = new FacebookStrategy(
   {
     clientID: process.env.FACEBOOK_APP_ID,
@@ -10,7 +11,7 @@ const facebookStrategy = new FacebookStrategy(
     callbackURL: process.env.FACEBOOK_CALLBACK_URL,
     state: true,
   },
-  async (req, accessToken, refreshToken, profile, cb) => {
+  async (req, accessToken, refreshToken, profile, done) => {
     try {
       const storedState = req.session.oauthState;
       const returnedState = req.query.state;
@@ -18,18 +19,17 @@ const facebookStrategy = new FacebookStrategy(
       if (storedState !== returnedState) {
         return done(new Error("Invalid state parameter"), null);
       }
-      const user = await findUserByFacebookId(profile.id);
+      const user = await getUserByFacebookId(profile.id);
       if (!user) {
         const new_user = await createUser(profile.displayName, profile.id);
-        return cb(null, new_user);
+        return done(null, new_user);
       } else {
-        return cb(null, user);
+        return done(null, user);
       }
     } catch (err) {
-      return cb(err);
+      return done(err);
     }
   }
-  
 );
 
 module.exports = facebookStrategy;

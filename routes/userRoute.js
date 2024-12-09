@@ -6,10 +6,11 @@ const {
 const userCreateSchema = require("../schemas/userSchema/createUserSchema");
 const userLoginSchema = require("../schemas/userSchema/loginUserSchema");
 const resultErrorMiddleware = require("../middlewares/resultErrorMiddleware");
-const { getQuestionsByUser } = require("../models/questionsModel");
+const { questionsByUser } = require("../controllers/questionsController");
+
 const route = Router();
 
-route.get("/question", getQuestionsByUser);
+route.get("/question", questionsByUser);
 route.post(
   "/signup",
   resultErrorMiddleware(userCreateSchema),

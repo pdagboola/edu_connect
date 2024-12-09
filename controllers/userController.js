@@ -2,6 +2,8 @@ require("dotenv").config({
   path: "/Users/apple/Desktop/code/edu_connect/config/.env",
 });
 const { createUser, getUserByEmail } = require("../models/userModel");
+const { insertInterests } = require("../models/interestsModel");
+const { insertCommuntities } = require("../models/communitiesModel");
 const userLoginSchema = require("../schemas/userSchema/loginUserSchema");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -9,16 +11,8 @@ const checkIfUserExists = require("../services/userService");
 
 const registerUserPost = async (req, res) => {
   try {
-    const {
-      username,
-      password,
-      first_name,
-      last_name,
-      email,
-      interests,
-      communities,
-    } = req.validatedData;
-    const name = `${first_name.trim("")} ${last_name.trim("")}`;
+    const { username, password, name, email, interests, communities } =
+      req.validatedData;
     const new_password = await bcrypt.hash(password, 10);
     const userExists = await checkIfUserExists(email);
     if (userExists) {
@@ -27,15 +21,9 @@ const registerUserPost = async (req, res) => {
         .json({ success: false, err: "This user already exists" });
     }
     const date_joined = new Date().toISOString();
-    await createUser(
-      username,
-      new_password,
-      name,
-      email,
-      date_joined,
-      interests,
-      communities
-    );
+    await createUser(username, new_password, name, email, date_joined);
+    await insertInterests(interests);
+    await insertCommuntities(communities);
     return res
       .status(200)
       .json({ succes: true, data: "User created sucessfully" });
