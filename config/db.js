@@ -1,15 +1,45 @@
 const pool = require("../config/pool");
 
-async function deleteDatabase() {
-  await pool.query(`DROP TABLE IF EXISTS users CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS answers CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS questions CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS interests CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS communities CASCADE;`);
-  await pool.query(`DROP TABLE IF EXISTS user_interests;`);
-  await pool.query(`DROP TABLE IF EXISTS user_communities;`);
-}
 async function createDatabase() {
+  await pool.connect(); // Reconnect to the database pool after closing it
+  console.log("Reconnected to the database.");
+  const { rows } = await pool.query(`
+  SELECT table_name
+  FROM information_schema.tables
+  WHERE table_schema = 'public';
+`);
+  await pool
+    .query(`DROP TABLE IF EXISTS users CASCADE;`)
+    .then(() => console.log("users table dropped"))
+    .catch((err) => console.error("Error dropping users table", err));
+  await pool
+    .query(`DROP TABLE IF EXISTS answers CASCADE;`)
+    .then(() => console.log("answers table dropped"))
+    .catch((err) => console.error("Error dropping answers table", err));
+  await pool
+    .query(`DROP TABLE IF EXISTS questions CASCADE;`)
+    .then(() => console.log("questions table dropped"))
+    .catch((err) => console.error("Error dropping questions table", err));
+  await pool
+    .query(`DROP TABLE IF EXISTS interests CASCADE;`)
+    .then(() => console.log("interests table dropped"))
+    .catch((err) => console.error("Error dropping interests table", err));
+  await pool
+    .query(`DROP TABLE IF EXISTS communities CASCADE;`)
+    .then(() => console.log("communities table dropped"))
+    .catch((err) => console.error("Error dropping communities table", err));
+  await pool
+    .query(`DROP TABLE IF EXISTS user_interests;`)
+    .then(() => console.log("user_interests table dropped"))
+    .catch((err) => console.error("Error dropping users_interests table", err));
+  await pool
+    .query(`DROP TABLE IF EXISTS user_communities;`)
+    .then(() => console.log("users_coommuntities table dropped"))
+    .catch((err) =>
+      console.error("Error dropping users_communities table", err)
+    );
+
+  console.log(rows, "tables");
   await pool.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
 
   await pool.query(
@@ -37,9 +67,8 @@ async function createDatabase() {
 
 (async () => {
   try {
-    await deleteDatabase();
-    await createDatabase();
-    console.log("Database deleted successfully.");
+    // await deleteDatabase();
+    await createDatabase().then(console.log("Database created successfully."));
   } catch (err) {
     console.error("Error creating database:", err.message);
   }
