@@ -6,7 +6,7 @@ const {
   getQuestionsByUser,
   getQuestionsById,
 } = require("../models/questionsModel");
-const jwt = require("jsonwebtoken");
+
 const askQuestion = async (req, res) => {
   try {
     const asked_by = req.user.id;

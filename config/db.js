@@ -1,5 +1,4 @@
 const pool = require("../config/pool");
-
 async function createDatabase() {
   await pool.connect(); // Reconnect to the database pool after closing it
   console.log("Reconnected to the database.");

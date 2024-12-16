@@ -1,5 +1,6 @@
 const passport = require("../auth/passport");
 const generateState = require("../helpers/generateState");
+const jwt = require("jsonwebtoken");
 
 const googleLogin = (req, res, next) => {
   passport.authenticate("google", {
@@ -14,18 +15,24 @@ const googleCallback = (req, res, next) => {
     { failureRedirect: "/login" },
     (err, user, info) => {
       if (err) {
-        console.log(err, "error");
-
         return next(err);
       }
       if (!user) {
-        console.log(user, "user");
-        return res.redirect("/question");
+        return res.redirect("/auth/google");
       }
+
       req.login(user, (err) => {
         if (err) {
           return next(err);
         }
+        const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
+          expiresIn: "1h",
+        });
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
         return res.redirect("/question");
       });
     }

@@ -9,12 +9,15 @@ passport.use(jwtStrategy);
 passport.use(googleStrategy);
 passport.use(facebookStrategy);
 
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser((user, done) => {
+  console.log(user, "user serialize");
+  done(null, user.id);
+});
 
 passport.deserializeUser(async (id, done) => {
   try {
     const users = await getAllUsers();
-    const user = users.find((u) => u.id === id);
+    const user = users.find((u) => u.id || u.google_id || u.facebook_id === id);
     done(null, user || null);
   } catch (err) {
     done(err, null);

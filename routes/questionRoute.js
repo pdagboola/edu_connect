@@ -6,9 +6,8 @@ const {
   allQuestions,
   questionsById,
 } = require("../controllers/questionsController");
-const passport = require("../auth/passport");
+// const passport = require("../auth/passport");
 
-route.use(passport.authenticate("jwt", { session: false }));
 route.get("/", allQuestions);
 route.get("/:id", questionsById);
 route.post("/", askQuestion);
