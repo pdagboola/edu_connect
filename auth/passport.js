@@ -11,7 +11,7 @@ passport.use(facebookStrategy);
 
 passport.serializeUser((user, done) => {
   console.log(user, "user serialize");
-  done(null, user.id);
+  done(null, user[0].id);
 });
 
 passport.deserializeUser(async (id, done) => {
