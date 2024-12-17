@@ -1,3 +1,6 @@
+require("dotenv").config({
+  path: "/Users/apple/Desktop/code/edu_connect/config/.env",
+});
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const { getUserByEmail } = require("../models/userModel");
@@ -5,13 +8,14 @@ const { getUserByEmail } = require("../models/userModel");
 const resetPassword = async (req, res) => {
   const { email } = req.body;
   const user = await getUserByEmail(email);
-  if (!user) return res.status(404).send("User not found");
+  if (!user)
+    return res.status(404).json({ success: false, data: "User not found" });
 
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
 
-  const resetUrl = `http://localhoset:3030/auth/reset/${token}`;
+  const resetUrl = `http://localhoset:${process.env.PORT}/auth/reset/${token}`;
 
   const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -20,16 +24,22 @@ const resetPassword = async (req, res) => {
       pass: process.env.EMAIL_PASS,
     },
   });
+  try {
+    await transporter.sendMail({
+      to: user.email,
+      subject: "Password Reset",
+      html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`,
+    });
 
-  await transporter.sendMail({
-    to: user.email,
-    subject: "Password Reset",
-    html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`,
-  });
-
-  res
-    .status(200)
-    .json({ success: true, data: "Password reset link sent to your email." });
+    res
+      .status(200)
+      .json({ success: true, data: "Password reset link sent to your email." });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      data: "Failed to send reset email.",
+    });
+  }
 };
 
 module.exports = resetPassword;
